@@ -12,7 +12,7 @@ Database Management System (DBMS) course project.
 - XAMPP (Local Server)
 
 ## Features
-- Customer Registration
+- Customer Registration,
 - Menu Browsing with Quantity Selection
 - Live Price Calculation
 - Order Summary
