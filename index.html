@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Orchid Kitchen — Online Food Order</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;900&family=Nunito:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --bg:        #FDF8F3;
+  --surface:   #FFFFFF;
+  --card:      #FFFFFF;
+  --border:    #EDE3D8;
+  --pink:      #E8A0A0;
+  --pink-dark: #C97A7A;
+  --pink-soft: #F5DADA;
+  --green:     #6BAA8A;
+  --green-dark:#4E8A6E;
+  --brown:     #7B5C45;
+  --text:      #3D2B1F;
+  --muted:     #9E8070;
+  --white:     #FFFFFF;
+  --shadow:    0 4px 24px rgba(120,80,60,0.10);
+  --radius:    16px;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+::-webkit-scrollbar{width:6px;}
+::-webkit-scrollbar-track{background:#F5EDE6;}
+::-webkit-scrollbar-thumb{background:var(--pink);border-radius:3px;}
+
+/* ── HEADER ── */
+header{
+  background:var(--white);
+  border-bottom:2px solid var(--border);
+  padding:14px 40px;
+  display:flex;align-items:center;justify-content:space-between;
+  position:sticky;top:0;z-index:100;
+  box-shadow:0 2px 16px rgba(120,80,60,0.08);
+}
+.logo{
+  font-family:'Playfair Display',serif;
+  font-size:24px;color:var(--brown);
+  display:flex;align-items:center;gap:8px;
+}
+.logo .orchid{color:var(--pink-dark);}
+.logo .dot{width:8px;height:8px;background:var(--pink);border-radius:50%;display:inline-block;margin:0 2px;}
+.cart-pill{
+  background:var(--pink);color:var(--white);
+  border-radius:50px;padding:9px 22px;
+  font-size:13px;font-weight:700;cursor:pointer;
+  transition:background .2s;font-family:'Nunito',sans-serif;
+  border:none;
+}
+.cart-pill:hover{background:var(--pink-dark);}
+
+.section{display:none;}
+.section.active{display:block;}
+
+/* ── REGISTER ── */
+.reg-page{
+  min-height:calc(100vh - 66px);
+  display:flex;align-items:center;justify-content:center;
+  padding:40px 20px;
+  background:linear-gradient(135deg, #FDF0EC 0%, #FDF8F3 60%, #EEF5F0 100%);
+}
+.reg-card{
+  background:var(--white);
+  border:2px solid var(--border);
+  border-radius:28px;
+  padding:50px 46px;
+  max-width:470px;width:100%;
+  box-shadow:0 8px 48px rgba(180,120,100,0.12);
+  position:relative;
+  overflow:hidden;
+}
+.reg-card::before{
+  content:'🌸';font-size:120px;opacity:0.05;
+  position:absolute;top:-20px;right:-20px;
+  pointer-events:none;
+}
+.reg-top{text-align:center;margin-bottom:32px;}
+.reg-top .welcome-badge{
+  display:inline-block;
+  background:var(--pink-soft);
+  color:var(--pink-dark);
+  border-radius:50px;
+  padding:6px 18px;
+  font-size:13px;font-weight:700;
+  letter-spacing:.5px;margin-bottom:14px;
+}
+.reg-top h2{
+  font-family:'Playfair Display',serif;
+  font-size:32px;color:var(--brown);margin-bottom:6px;
+}
+.reg-top p{color:var(--muted);font-size:14px;line-height:1.5;}
+
+.form-row{margin-bottom:18px;}
+.form-row label{
+  display:block;font-size:11px;font-weight:800;
+  letter-spacing:1px;text-transform:uppercase;
+  color:var(--muted);margin-bottom:7px;
+}
+.form-row input,.form-row textarea{
+  width:100%;padding:13px 16px;
+  background:#FDF8F5;border:2px solid var(--border);
+  border-radius:12px;font-size:14px;
+  font-family:'Nunito',sans-serif;color:var(--text);
+  outline:none;transition:border-color .2s,box-shadow .2s;
+}
+.form-row input:focus,.form-row textarea:focus{
+  border-color:var(--pink);
+  box-shadow:0 0 0 3px rgba(232,160,160,0.18);
+  background:var(--white);
+}
+.form-row textarea{resize:vertical;min-height:76px;}
+.form-row input::placeholder,.form-row textarea::placeholder{color:#C8B8B0;}
+.btn-pink{
+  width:100%;padding:15px;
+  background:linear-gradient(135deg,var(--pink),var(--pink-dark));
+  color:var(--white);border:none;border-radius:12px;
+  font-size:15px;font-weight:700;font-family:'Nunito',sans-serif;
+  cursor:pointer;transition:opacity .2s,transform .1s;
+  letter-spacing:.3px;margin-top:6px;
+}
+.btn-pink:hover{opacity:.9;}
+.btn-pink:active{transform:scale(.98);}
+
+/* ── MENU ── */
+.menu-hero{
+  background:linear-gradient(135deg,#FFF0EC,#FDF8F3);
+  border-bottom:2px solid var(--border);
+  padding:32px 40px;
+}
+.menu-hero h2{
+  font-family:'Playfair Display',serif;
+  font-size:32px;color:var(--brown);
+}
+.menu-hero p{color:var(--muted);font-size:14px;margin-top:5px;}
+.menu-grid{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));
+  gap:20px;padding:32px 40px;
+  max-width:1200px;margin:0 auto;
+}
+.food-card{
+  background:var(--white);border:2px solid var(--border);
+  border-radius:var(--radius);padding:22px;
+  transition:transform .2s,border-color .2s,box-shadow .2s;
+  display:flex;flex-direction:column;gap:10px;
+}
+.food-card:hover{
+  transform:translateY(-4px);
+  border-color:var(--pink);
+  box-shadow:0 8px 32px rgba(232,160,160,0.18);
+}
+.food-emoji{font-size:40px;text-align:center;padding:6px 0;}
+.food-name{
+  font-family:'Playfair Display',serif;
+  font-size:18px;color:var(--brown);
+}
+.food-price{font-size:17px;font-weight:700;color:var(--pink-dark);}
+.food-price span{font-size:12px;font-weight:400;color:var(--muted);}
+.qty-row{display:flex;align-items:center;gap:8px;margin-top:4px;}
+.qty-btn{
+  width:32px;height:32px;border-radius:10px;
+  border:2px solid var(--pink);background:var(--white);
+  color:var(--pink-dark);font-size:18px;font-weight:700;
+  cursor:pointer;display:flex;align-items:center;justify-content:center;
+  transition:background .15s,color .15s;line-height:1;
+}
+.qty-btn:hover{background:var(--pink);color:var(--white);}
+.qty-num{
+  width:46px;text-align:center;
+  background:#FDF8F5;border:2px solid var(--border);
+  border-radius:8px;padding:5px;font-size:14px;font-weight:700;
+  font-family:'Nunito',sans-serif;color:var(--text);outline:none;
+}
+.item-sub{font-size:12px;color:var(--pink-dark);margin-left:auto;font-weight:700;}
+
+.menu-bar{
+  background:var(--white);border-top:2px solid var(--border);
+  padding:18px 40px;
+  display:flex;align-items:center;justify-content:space-between;
+  position:sticky;bottom:0;
+  box-shadow:0 -4px 20px rgba(120,80,60,0.08);
+}
+.total-live{font-size:20px;font-weight:700;color:var(--brown);}
+.total-live span{color:var(--pink-dark);}
+.btn-review{
+  padding:12px 32px;
+  background:linear-gradient(135deg,var(--pink),var(--pink-dark));
+  color:var(--white);border:none;border-radius:12px;
+  font-size:14px;font-weight:700;font-family:'Nunito',sans-serif;
+  cursor:pointer;transition:opacity .2s;
+}
+.btn-review:hover{opacity:.88;}
+
+/* ── SUMMARY ── */
+.sum-wrap{max-width:900px;margin:0 auto;padding:40px 24px;}
+.sum-wrap h2{
+  font-family:'Playfair Display',serif;
+  font-size:32px;color:var(--brown);margin-bottom:26px;
+}
+.sum-grid{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-bottom:22px;}
+@media(max-width:620px){.sum-grid{grid-template-columns:1fr;}}
+.sum-box{
+  background:var(--white);border:2px solid var(--border);
+  border-radius:var(--radius);padding:26px;
+  box-shadow:var(--shadow);
+}
+.sum-box h3{
+  font-family:'Playfair Display',serif;
+  font-size:17px;color:var(--brown);
+  margin-bottom:16px;padding-bottom:10px;
+  border-bottom:2px solid var(--border);
+}
+.cust-rows{display:flex;flex-direction:column;gap:10px;}
+.cust-rows .r{display:flex;justify-content:space-between;font-size:14px;}
+.cust-rows .r .lbl{color:var(--muted);font-weight:600;}
+.cust-rows .r .val{color:var(--brown);font-weight:700;text-align:right;max-width:60%;}
+table.otable{width:100%;border-collapse:collapse;font-size:13px;}
+table.otable th{
+  background:#FDF0EC;color:var(--brown);
+  padding:9px 12px;text-align:left;
+  font-size:11px;text-transform:uppercase;
+  letter-spacing:.8px;font-weight:800;
+}
+table.otable td{padding:10px 12px;border-bottom:1px solid var(--border);color:var(--text);}
+table.otable tr:last-child td{border-bottom:none;}
+table.otable .rc{text-align:right;color:var(--pink-dark);font-weight:700;}
+.grand-row{
+  display:flex;justify-content:space-between;align-items:center;
+  background:linear-gradient(135deg,#FFF0EC,#FDF8F3);
+  border:2px solid var(--pink-soft);
+  padding:18px 26px;border-radius:14px;margin-top:20px;
+}
+.grand-row .gl{font-size:16px;font-weight:700;color:var(--muted);}
+.grand-row .ga{font-size:24px;font-weight:800;color:var(--pink-dark);}
+.pay-box{
+  background:var(--white);border:2px solid var(--border);
+  border-radius:14px;padding:18px 24px;
+  display:flex;align-items:center;gap:14px;margin-top:16px;
+  box-shadow:var(--shadow);
+}
+.pay-icon{font-size:28px;background:#F0F9F4;border-radius:12px;padding:10px;}
+.pay-label{font-weight:700;color:var(--brown);font-size:15px;}
+.pay-sub{font-size:12px;color:var(--muted);margin-top:2px;}
+.co-row{display:flex;gap:12px;margin-top:20px;}
+.btn-back{
+  padding:13px 26px;background:var(--white);
+  color:var(--muted);border:2px solid var(--border);
+  border-radius:12px;font-size:14px;font-weight:700;
+  font-family:'Nunito',sans-serif;cursor:pointer;transition:border-color .2s,color .2s;
+}
+.btn-back:hover{border-color:var(--pink);color:var(--pink-dark);}
+.btn-checkout{
+  flex:1;padding:13px;
+  background:linear-gradient(135deg,var(--green),var(--green-dark));
+  color:var(--white);border:none;border-radius:12px;
+  font-size:15px;font-weight:700;font-family:'Nunito',sans-serif;
+  cursor:pointer;transition:opacity .2s;
+}
+.btn-checkout:hover{opacity:.88;}
+
+/* ── THANK YOU ── */
+.ty-page{
+  min-height:calc(100vh - 66px);
+  display:flex;align-items:center;justify-content:center;
+  padding:40px 20px;
+  background:linear-gradient(135deg,#FFF0F5,#FDF8F3,#EEF5F0);
+}
+.ty-card{
+  background:var(--white);border:2px solid var(--border);
+  border-radius:28px;padding:56px 48px;
+  max-width:460px;width:100%;text-align:center;
+  box-shadow:0 8px 48px rgba(180,120,100,0.12);
+}
+.ty-icon{font-size:72px;margin-bottom:18px;animation:pop .6s ease;}
+@keyframes pop{0%{transform:scale(.5);opacity:0}70%{transform:scale(1.15)}100%{transform:scale(1);opacity:1}}
+.ty-card h2{
+  font-family:'Playfair Display',serif;
+  font-size:34px;color:var(--brown);margin-bottom:10px;
+}
+.ty-card p{color:var(--muted);font-size:15px;line-height:1.6;margin-bottom:6px;}
+.oid{
+  display:inline-block;background:var(--pink-soft);
+  border:2px solid var(--pink);border-radius:12px;
+  padding:10px 24px;font-weight:800;font-size:16px;
+  color:var(--pink-dark);margin:16px 0;letter-spacing:.5px;
+}
+.cod-note{
+  background:#F0F9F4;border:2px solid #C5E8D5;
+  border-radius:12px;padding:13px 18px;
+  font-size:13px;color:var(--green-dark);
+  font-weight:700;margin-top:12px;
+}
+.btn-again{
+  margin-top:24px;padding:13px 32px;
+  background:linear-gradient(135deg,var(--pink),var(--pink-dark));
+  color:var(--white);border:none;border-radius:12px;
+  font-size:14px;font-weight:700;font-family:'Nunito',sans-serif;
+  cursor:pointer;transition:opacity .2s;
+}
+.btn-again:hover{opacity:.88;}
+
+/* TOAST */
+#toast{
+  position:fixed;bottom:28px;right:28px;
+  background:var(--brown);color:var(--white);
+  padding:13px 20px;border-radius:12px;
+  font-size:13px;font-weight:600;
+  transform:translateY(70px);opacity:0;
+  transition:all .3s;z-index:9999;
+  max-width:260px;box-shadow:0 4px 20px rgba(0,0,0,.15);
+}
+#toast.show{transform:translateY(0);opacity:1;}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="logo">
+    🌸 <span class="orchid">Orchid</span><span class="dot"></span><span>Kitchen</span>
+  </div>
+  <button class="cart-pill" onclick="goSummary()">🛒 My Order</button>
+</header>
+
+<!-- ══ SECTION 1: REGISTER ══ -->
+<div id="s-reg" class="section active">
+  <div class="reg-page">
+    <div class="reg-card">
+      <div class="reg-top">
+        <div class="welcome-badge">🌸 Welcome to Orchid Kitchen</div>
+        <h2>Let's Get Started!</h2>
+        <p>Enter your details below and we'll have your food delivered fresh to your door.</p>
+      </div>
+
+      <div class="form-row">
+        <label>Your Name</label>
+        <input type="text" id="inp-name" placeholder="e.g. Rahim Uddin"/>
+      </div>
+      <div class="form-row">
+        <label>Phone Number</label>
+        <input type="tel" id="inp-phone" placeholder="e.g. 01700000000"/>
+      </div>
+      <div class="form-row">
+        <label>Delivery Address</label>
+        <textarea id="inp-address" placeholder="House, Road, Area, City..."></textarea>
+      </div>
+      <button class="btn-pink" onclick="doRegister()">Continue to Menu →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ SECTION 2: MENU ══ -->
+<div id="s-menu" class="section">
+  <div class="menu-hero">
+    <h2>🍽️ Our Menu</h2>
+    <p>Choose your favourites — the total updates automatically as you pick items.</p>
+  </div>
+  <div class="menu-grid" id="menu-grid"></div>
+  <div class="menu-bar">
+    <div class="total-live">Total: <span id="live-total">$0.00</span></div>
+    <button class="btn-review" onclick="goSummary()">Review Order →</button>
+  </div>
+</div>
+
+<!-- ══ SECTION 3: SUMMARY ══ -->
+<div id="s-sum" class="section">
+  <div class="sum-wrap">
+    <h2>Order Summary</h2>
+    <div class="sum-grid">
+      <div class="sum-box">
+        <h3>👤 Your Details</h3>
+        <div class="cust-rows" id="cust-display"></div>
+      </div>
+      <div class="sum-box">
+        <h3>🧾 Items Ordered</h3>
+        <table class="otable">
+          <thead><tr><th>Item</th><th>Qty</th><th>Price</th><th class="rc">Subtotal</th></tr></thead>
+          <tbody id="sum-rows"></tbody>
+        </table>
+      </div>
+    </div>
+    <div class="grand-row">
+      <span class="gl">Grand Total</span>
+      <span class="ga" id="sum-total">$0.00</span>
+    </div>
+    <div class="pay-box">
+      <div class="pay-icon">💵</div>
+      <div>
+        <div class="pay-label">Cash on Delivery</div>
+        <div class="pay-sub">Pay when your order arrives at your door.</div>
+      </div>
+    </div>
+    <div class="co-row">
+      <button class="btn-back" onclick="show('s-menu')">← Edit Order</button>
+      <button class="btn-checkout" onclick="doCheckout()">✓ Place Order</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ SECTION 4: THANK YOU ══ -->
+<div id="s-ty" class="section">
+  <div class="ty-page">
+    <div class="ty-card">
+      <div class="ty-icon">🎉</div>
+      <h2>Order Placed!</h2>
+      <p>Thank you, <strong id="ty-name"></strong>!</p>
+      <p>Your food is being prepared with love. 🌸</p>
+      <div class="oid">Order ID: #<span id="ty-oid">—</span></div>
+      <p>Delivering to your address soon.</p>
+      <div class="cod-note">✅ Please keep cash ready — Pay on Delivery!</div>
+      <button class="btn-again" onclick="reset()">Order Again 🌸</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+const menu = [
+  {id:1,  name:"Chicken Wrap",        price:8.99,  emoji:"🌯"},
+  {id:2,  name:"Chicken Burger",      price:6.49,  emoji:"🍔"},
+  {id:3,  name:"Veggie Wrap",         price:5.99,  emoji:"🥗"},
+  {id:4,  name:"Beef Tacos",          price:7.49,  emoji:"🌮"},
+  {id:5,  name:"Caesar Salad",        price:5.49,  emoji:"🥙"},
+  {id:6,  name:"Spaghetti Bolognese", price:9.99,  emoji:"🍝"},
+  {id:7,  name:"Grilled Chicken",     price:13.99, emoji:"🍗"},
+  {id:8,  name:"French Fries",        price:2.99,  emoji:"🍟"},
+  {id:9,  name:"Chocolate Brownie",   price:3.49,  emoji:"🍫"},
+  {id:10, name:"Mango Smoothie",      price:3.99,  emoji:"🥭"}
+];
+
+let cust={}, qty={};
+
+function show(id){
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0,0);
+}
+function toast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2800);
+}
+
+function doRegister(){
+  const name=document.getElementById('inp-name').value.trim();
+  const phone=document.getElementById('inp-phone').value.trim();
+  const address=document.getElementById('inp-address').value.trim();
+  if(!name){toast('⚠️ Please enter your name!');return;}
+  if(!phone){toast('⚠️ Please enter phone number!');return;}
+  if(!address){toast('⚠️ Please enter your address!');return;}
+
+  fetch('register.php',{
+    method:'POST',
+    headers:{'Content-Type':'application/x-www-form-urlencoded'},
+    body:`name=${encodeURIComponent(name)}&phone_number=${encodeURIComponent(phone)}&address=${encodeURIComponent(address)}`
+  })
+  .then(r=>r.json())
+  .then(data=>{
+    cust={id:data.success?data.customer_id:0,name,phone,address};
+    toast('✅ Welcome, '+name+'! 🌸');
+  })
+  .catch(()=>{
+    cust={id:0,name,phone,address};
+    toast('✅ Welcome, '+name+'!');
+  });
+
+  buildMenu();
+  show('s-menu');
+}
+
+function buildMenu(){
+  const g=document.getElementById('menu-grid');
+  g.innerHTML='';
+  menu.forEach(item=>{
+    qty[item.id]=0;
+    g.innerHTML+=`
+    <div class="food-card">
+      <div class="food-emoji">${item.emoji}</div>
+      <div class="food-name">${item.name}</div>
+      <div class="food-price">$${item.price.toFixed(2)} <span>/ item</span></div>
+      <div class="qty-row">
+        <button class="qty-btn" onclick="chQty(${item.id},-1)">−</button>
+        <input class="qty-num" id="q${item.id}" type="number" value="0" min="0" onchange="setQty(${item.id},this.value)"/>
+        <button class="qty-btn" onclick="chQty(${item.id},+1)">+</button>
+        <span class="item-sub" id="sb${item.id}"></span>
+      </div>
+    </div>`;
+  });
+  calcTotal();
+}
+
+function chQty(id,d){qty[id]=Math.max(0,(qty[id]||0)+d);document.getElementById('q'+id).value=qty[id];updSub(id);calcTotal();}
+function setQty(id,v){qty[id]=Math.max(0,parseInt(v)||0);updSub(id);calcTotal();}
+function updSub(id){const m=menu.find(x=>x.id===id);document.getElementById('sb'+id).textContent=qty[id]>0?`= $${(m.price*qty[id]).toFixed(2)}`:'';} 
+function calcTotal(){const t=menu.reduce((s,m)=>s+m.price*(qty[m.id]||0),0);document.getElementById('live-total').textContent='$'+t.toFixed(2);}
+function getTotal(){return menu.reduce((s,m)=>s+m.price*(qty[m.id]||0),0);}
+
+function goSummary(){
+  const ordered=menu.filter(m=>qty[m.id]>0);
+  if(!ordered.length){toast('🛒 Please add items first!');return;}
+  if(!cust.name){toast('Please register first!');show('s-reg');return;}
+
+  document.getElementById('cust-display').innerHTML=`
+    <div class="r"><span class="lbl">Name</span><span class="val">${cust.name}</span></div>
+    <div class="r"><span class="lbl">Phone</span><span class="val">${cust.phone}</span></div>
+    <div class="r"><span class="lbl">Address</span><span class="val">${cust.address}</span></div>
+    <div class="r"><span class="lbl">Customer ID</span><span class="val">#${cust.id}</span></div>`;
+
+  let rows='';
+  ordered.forEach(m=>{
+    const q=qty[m.id],sub=(m.price*q).toFixed(2);
+    rows+=`<tr><td>${m.emoji} ${m.name}</td><td>${q}</td><td>$${m.price.toFixed(2)}</td><td class="rc">$${sub}</td></tr>`;
+  });
+  document.getElementById('sum-rows').innerHTML=rows;
+  document.getElementById('sum-total').textContent='$'+getTotal().toFixed(2);
+  show('s-sum');
+}
+
+function doCheckout(){
+  const items=menu.filter(m=>qty[m.id]>0).map(m=>({
+    item_id:m.id,quantity:qty[m.id],
+    subtotal:parseFloat((m.price*qty[m.id]).toFixed(2))
+  }));
+  fetch('place_order.php',{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({customer_id:cust.id,total:parseFloat(getTotal().toFixed(2)),items})
+  })
+  .then(r=>r.json())
+  .then(data=>{
+    document.getElementById('ty-name').textContent=cust.name;
+    document.getElementById('ty-oid').textContent=data.order_id||'—';
+    show('s-ty');
+  })
+  .catch(()=>{
+    document.getElementById('ty-name').textContent=cust.name;
+    document.getElementById('ty-oid').textContent=Math.floor(Math.random()*9000+1000);
+    show('s-ty');
+  });
+}
+
+function reset(){
+  cust={};qty={};
+  ['inp-name','inp-phone','inp-address'].forEach(id=>document.getElementById(id).value='');
+  show('s-reg');
+}
+</script>
+</body>
+</html>
